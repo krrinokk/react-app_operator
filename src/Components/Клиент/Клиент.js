@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import './Style.css'
+import {Button, Space } from 'antd';
 const Клиент = ({ user, клиентs, setКлиентs, removeКлиент }) => {
 useEffect(() => {
 const getКлиентs = async () => {
@@ -40,15 +41,18 @@ return (
 <h3>Клиентская база</h3>
 {клиентs.map(({ номер_клиента, фио, баланс }) => (
 <div className="Клиент" key={номер_клиента} id={номер_клиента} >
-<strong > {'Номер клиента: ' + номер_клиента} </strong>
+<h1> {'Номер клиента: ' + номер_клиента} </h1>
 <p></p>
-<strong > {'ФИО: ' + фио} </strong>
+<h1> {'ФИО: ' + фио} </h1>
 <p></p>
-<strong > {'Баланс: ' + баланс} </strong>
+<h1> {'Баланс: ' + баланс} </h1>
 <p></p>
 
-{user.isAuthenticated ? (
-<button onClick={() => deleteItem({ номер_клиента })}>Удалить</button>
+{user.isAuthenticated && user.userRole==="user" ? (
+ <Space wrap>
+        
+ <Button onClick={() => deleteItem({ номер_клиента })}  type="primary">Удалить</Button>
+</Space>
 ) : (
 ""
 )}

@@ -1,4 +1,8 @@
 import React from 'react'
+import 'antd/dist/reset.css';
+import { Input, Button, Space } from 'antd';
+import { ContactsOutlined  } from '@ant-design/icons';
+
 const КлиентCreate = ({ user,addКлиент }) => {
 const handleSubmit = (e) => {
 e.preventDefault()
@@ -14,7 +18,7 @@ method: 'POST',
 headers: { 'Content-Type': 'application/json' },
 body: JSON.stringify(Клиент)
 }
-const response = await fetch("https://localhost:7061/api/клиентs/",
+const response = await fetch("api/клиентs/",
 
 requestOptions)
 
@@ -36,18 +40,24 @@ createКлиент()
 }
 return (
         <>
-        {user.isAuthenticated ? (
+        {user.isAuthenticated && user.userRole==="user" ? (
           <>
 <h3>Добавление нового клиента в клиенсткую базу</h3>
 <form onSubmit={handleSubmit}>
-<label>Номер_клиента: </label>
-<input type="number" name="номер_клиента" placeholder="Введите Номер_клиента:" /> <br></br>
+<label>Номер клиента: </label>
+<Input type="number" name="номер_клиента" placeholder="Введите номер_клиента"  /><br></br>
 <label>Баланс: </label>
-<input type="number" name="баланс"  placeholder="Введите Баланс:" /><br></br>
+<Input type="number" name="баланс" placeholder="Введите баланс"  /><br></br>
 <label>ФИО: </label>
-<input type="text" name="фио"  placeholder="Введите ФИО:" /><br></br>
+<Input type="text" icon={<ContactsOutlined />}  name="фио"  placeholder="Введите ФИО:" /><br></br>
+<br></br>
+<Space wrap>
 
-<button type="submit">Создать</button>
+    <Button type="primary" htmlType="submit">Создать</Button>
+
+  </Space>
+  <br></br>
+  <br></br>
 </form>
 </>
       ) : (

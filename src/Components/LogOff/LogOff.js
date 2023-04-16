@@ -1,45 +1,48 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { Modal } from "antd"
 
-
-const LogOff = ({ user, setUser }) => {
+const LogOff = ({ setUser }) => {
+  const [open, setOpen] = useState(false)
   const navigate = useNavigate()
 
-  const LogOff = async (event) => {
+  const showModal = () => {
+    setOpen(true)
+  }
+
+  useEffect(() => {
+    showModal()
+  }, [])
+
+  const logOff = async (event) => {
     event.preventDefault()
 
     const requestOptions = {
-      method: "POST"
+      method: "POST",
     }
-    return await fetch(
-      "api/account/logoff",
-      requestOptions
-    )
-      .then((response) => {
-        // console.log(response.status)
+    return await fetch("api/account/logoff", requestOptions).then(
+      (response) => {
         response.status === 200 &&
           setUser({ isAuthenticated: false, userName: "" })
+        response.status === 401 ? navigate("/login") : navigate("/")
+        setOpen(false)
+      }
+    )
+  }
 
-          response.status === 401 && navigate("/login")
-      })
+  const handleCancel = () => {
+    console.log("Clicked cancel button")
+    setOpen(false)
+    navigate("/")
   }
 
   return (
     <>
-      {user.isAuthenticated ? (
-        <h3>Пользователь {user.userName} успешно вошел в систему</h3>
-      ) : (
-        <h3>Вы гость.</h3>
-      )}
-      {user.isAuthenticated ? (
-        <form onSubmit={LogOff}>
-      <button type="submit">Выйти</button>
-      </form> ) : (
-        ""
-      )} 
+      <Modal title="" open={open} onOk={logOff} onCancel={handleCancel}>
+        <p>Выполнить выход?</p>
+      </Modal>
     </>
   )
 }
-
 
 export default LogOff

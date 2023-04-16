@@ -1,4 +1,5 @@
 import React from 'react'
+import { Input, Button, Space } from 'antd';
 const ТарифCreate = ({user, addТариф }) => {
 const handleSubmit = (e) => {
 e.preventDefault()
@@ -47,27 +48,37 @@ createТариф()
 }
 return (
     <>
-    {user.isAuthenticated ? (
+    {user.isAuthenticated && user.userRole==="admin"  ? (
       <>
-<h3>Открытие нового тарифного плана:</h3>
+
+<h1><strong>Открытие нового тарифного плана:</strong></h1>
+<br></br>
 <form onSubmit={handleSubmit}>
-<label>Код тарифа: </label>
-<input type="number" name="код_тарифа" placeholder="Введите код_тарифа:" /> <br></br>
+<label>Кода тарифа: </label>
+<Input type="number" name="код_тарифа" placeholder="Введите код тарифа"  /><br></br>
 <label>Стоимость минуты разговора в роуминге: </label>
-<input type="number" name="минута_международная_стоимость"  placeholder="Введите минута_международная_стоимость:" /><br></br>
+<Input type="number" name="минута_международная_стоимость" placeholder="Введите стоимость минуты в роуминге"  /><br></br>
 <label>Стоимость минуты разговора между городами: </label>
-<input type="number" name="минута_межгород_стоимость"  placeholder="Введите минута_межгород_стоимость:" /><br></br>
+<Input type="number" name="минута_межгород_стоимость" placeholder="Введите стоимость минуты разговора между городами"  /><br></br>
 <label>Название тарифа: </label>
-<input type="text" name="название_тарифа"  placeholder="Введите название_тарифа:" /><br></br>
+<Input type="text" name="название_тарифа" placeholder="Введите название тарифа"  /><br></br>
 <label>Ежемесячная плата за тариф: </label>
-<input type="number" name="стоимость_перехода"  placeholder="Введите стоимость_перехода:" /><br></br>
+<Input type="number" name="стоимость_перехода" placeholder="Введите плату за тариф, в рублях"  /><br></br>
 <label>Код типа тарифа: </label>
-<input type="number" name="код_типа_тарифа_FK"  placeholder="Введите код_типа_тарифа_FK:" /><br></br>
+<Input type="number" name="код_типа_тарифа_FK" placeholder="Введите код типа тарифа"  /><br></br>
 <label>Статус: </label>
-<input type="text" name="статус"  placeholder="Введите статус:" /><br></br>
+<Input type="text" name="статус" placeholder="Введите статус"  /><br></br>
 <label>Дата открытия: </label>
-<input type="date" name="дата_открытия"  placeholder="Введите дата_открытия:" /><br></br>
-<button type="submit">Создать</button>
+<Input type="date" name="дата_открытия" placeholder="Введите дату открытия тарифа"  /><br></br>
+<br></br>
+<Space wrap>
+
+    <Button type="primary" htmlType="submit">Создать</Button>
+    
+  </Space>
+  <br></br>
+  <br></br>
+  <br></br>
 </form>
 </>
       ) : (

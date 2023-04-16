@@ -1,22 +1,31 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { Button, Checkbox, Form, Input, Modal } from 'antd';
+
 
 const LogIn = ({ user, setUser }) => {
+  const [open, setOpen] = useState(false)
   const [errorMessages, setErrorMessages] = useState([])
   const navigate = useNavigate()
 
-  const logIn = async (event) => {
-    event.preventDefault()
+  const showModal = () => {
+    setOpen(true);
+  };
+  
+  useEffect(() => {
+    showModal()
+  }, [])
 
-    var { email, password } = document.forms[0]
-    // console.log(email.value, password.value)
+  const logIn = async (formValues) => {
+    console.log("Success:", formValues)
 
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        email: email.value,
-        password: password.value,
+        email: formValues.email,
+        password: formValues.password,
+        rememberme: formValues.remember,
       }),
     }
     return await fetch(
@@ -24,9 +33,32 @@ const LogIn = ({ user, setUser }) => {
       requestOptions
     )
       .then((response) => {
+         const getUser = async () => {
+            return await fetch("api/account/isauthenticated")
+              .then((response) => {
+                response.status === 401 &&
+                  setUser({ isAuthenticated: false, userName: "", userRole:"" })
+                return response.json()
+              })
+              .then(
+                (data) => {
+                  if (
+                    typeof data !== "undefined" &&
+                    typeof data.userName !== "undefined" &&
+                    typeof data.userRole !== "undefined"
+                  ) {
+                    setUser({ isAuthenticated: true, userName: data.userName, userRole: data.userRole })
+                  }
+                },
+                (error) => {
+                  console.log(error)
+                }
+              )
+          }
+          getUser()
         // console.log(response.status)
         response.status === 200 &&
-          setUser({ isAuthenticated: true, userName: "" })
+          setUser({ isAuthenticated: true, userName: "", userRole: "" })
         return response.json()
       })
       .then(
@@ -36,7 +68,7 @@ const LogIn = ({ user, setUser }) => {
             typeof data !== "undefined" &&
             typeof data.userName !== "undefined"
           ) {
-            setUser({ isAuthenticated: true, userName: data.userName })
+            setUser({ isAuthenticated: true, userName: data.userName, userRole: data.userRole})
             navigate("/")
           }
           typeof data !== "undefined" &&
@@ -52,26 +84,71 @@ const LogIn = ({ user, setUser }) => {
   const renderErrorMessage = () =>
     errorMessages.map((error, index) => <div key={index}>{error}</div>)
 
-  return (
-    <>
-      {user.isAuthenticated ? (
-        <h3>Пользователь {user.userName} успешно вошел в систему</h3>   ) : (
-        <>
-          <h3>Вход</h3>
-          <form onSubmit={logIn}>
-            <label>Пользователь </label>
-            <input type="text" name="email" placeholder="Логин" />
-            <br />
-            <label>Пароль </label>
-            <input type="password" name="password" placeholder="Пароль" />
-            <br />
-            <button type="submit">Войти</button>
-          </form>          
-          {renderErrorMessage()}
-        </>
-      )}
-    </>
-  )
-}
-
-export default LogIn
+    const handleCancel = () => {
+      console.log("Clicked cancel button")
+      setOpen(false)
+      navigate("/")
+    }
+    return (
+      <>
+      <Modal open={open} onCancel={handleCancel} footer={[null]}>
+        {user.isAuthenticated ? (
+          <h3>Пользователь {user.userName} успешно вошел в систему</h3>   ) : (
+          <>
+            <h3>Вход</h3>
+            <Form 
+            onFinish={logIn}
+            name="basic"
+            labelCol={{span: 8,}}
+            wrapperCol={{
+              span: 16,
+            }}
+            style={{
+              maxWidth: 600,
+            }}
+            initialValues={{
+              remember: true,
+            }}
+            onFinishFailed={renderErrorMessage}
+            autoComplete="off">
+      <Form.Item label="Username" name="email" placeholder="Логин"
+            rules={[
+             {
+               required: true,
+               message: 'Please input your username!',
+             },
+                  ]}
+      >
+           <Input />
+      </Form.Item>
+      <Form.Item label="Password" name="password" placeholder="Пароль" 
+            rules={[
+              {
+                required: true,
+                message: 'Please input your password!',
+              },
+                   ]}
+      >
+        <Input.Password />
+      </Form.Item>
+      <Form.Item name="remember" valuePropName="checked" wrapperCol={{ offset: 8,span: 16, }}>
+              <Checkbox>Remember me</Checkbox>
+              {renderErrorMessage()}
+      </Form.Item>
+      <Form.Item
+        wrapperCol={{
+          offset: 8,
+          span: 16,
+        }}
+      >
+      <Button type="primary" htmlType="submit">Войти</Button>
+      </Form.Item>
+            </Form>          
+          </>
+        )}
+        </Modal>
+      </>
+    )
+  }
+  
+  export default LogIn

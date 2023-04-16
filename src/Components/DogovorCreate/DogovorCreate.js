@@ -1,4 +1,9 @@
 import React from 'react'
+import {  DatePicker} from 'antd';
+import { Input, Button, Space } from 'antd';
+const onChange = (date, dateString) => {
+  console.log(date, dateString);
+};
 const DogovorCreate = ({user, addDogovor }) => {
 const handleSubmit = (e) => {
 e.preventDefault()
@@ -44,26 +49,28 @@ createDogovor()
 }
 return (
     <>
-    {user.isAuthenticated ? (
+    {user.isAuthenticated && user.userRole==="user"  ?  (
       <>
 <h3>Заключение нового договора</h3>
 <form onSubmit={handleSubmit}>
 <label>Номер_договора: </label>
-<input type="number" name="номер_договора" placeholder="Введите Номер_договора:" /> <br></br>
+<Input type="number" name="номер_договора" placeholder="Введите Номер_договора:" /> <br></br>
 <label>Номер_телефона: </label>
-<input type="text" name="номер_телефона"  placeholder="Введите Номер_телефона:" /><br></br>
+<Input type="text" name="номер_телефона"  placeholder="Введите Номер_телефона:" /><br></br>
 <label>Серийный_номер_сим_карты: </label>
-<input type="text" name="серийный_номер_сим_карты"  placeholder="Введите Серийный_номер_сим_карты:" /><br></br>
+<Input type="text" name="серийный_номер_сим_карты"  placeholder="Введите Серийный_номер_сим_карты:" /><br></br>
 <label>Дата_заключения: </label>
-<input type="date" name="дата_заключения" placeholder="Введите Дата_заключения:" /><br></br>
+<DatePicker onChange={onChange} name="дата_заключения"  placeholder="Введите дата_заключения:" /><br></br>
 <label>Дата_расторжения: </label>
-<input type="date" name="дата_расторжения" placeholder="Введите Дата_расторжения:" /><br></br>
+<DatePicker onChange={onChange} name="дата_расторжения"  placeholder="Введите дата_расторжения:" /><br></br>
 <label>Код_тарифа_FK: </label>
-<input type="number" name="код_тарифа_FK" placeholder="Введите Код_тарифа_FK:" /><br></br>
+<Input type="number" name="код_тарифа_FK" placeholder="Введите Код_тарифа_FK:" /><br></br>
 <label>Номер_клиента_FK: </label>
-<input type="number" name="номер_клиента_FK" placeholder="Введите Номер_клиента_FK:" /><br></br>
+<Input type="number" name="номер_клиента_FK" placeholder="Введите Номер_клиента_FK:" /><br></br>
+<Space wrap>
+    <Button type="primary" htmlType="submit">Создать</Button>
+  </Space>
 
-<button type="submit">Создать</button>
 </form>
 
 </>
