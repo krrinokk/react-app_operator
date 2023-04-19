@@ -51,3 +51,9 @@
   float: right;
   margin: 16px 0 16px 24px;
 }
+.account-button {
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}
